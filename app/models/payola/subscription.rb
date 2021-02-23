@@ -108,6 +108,22 @@ module Payola
       # Support for discounts is added to stripe-ruby-mock in v2.2.0, 84f08eb
       self.coupon               = stripe_sub.discount && stripe_sub.discount.coupon.id if stripe_sub.respond_to?(:discount)
 
+      # Change plan
+      if self.plan&.stripe_id != stripe_sub.plan.id
+        new_plan = SubscriptionPlan.where(stripe_id: stripe_sub.plan.id).first
+        self.plan_id = new_plan.id if new_plan
+      end
+
+      # Pause
+      if stripe_sub.pause_collection.present?
+        begin
+          self.pause_collection_at = Time.current
+          self.pause_collection_behavior = stripe_sub.pause_collection.behavior
+          self.pause_collection_resumes_at = stripe_sub.pause_collection.resumes_at
+        rescue StandardError
+        end
+      end
+
       self.save!
       self
     end
