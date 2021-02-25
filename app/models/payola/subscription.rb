@@ -115,13 +115,17 @@ module Payola
       end
 
       # Pause
-      if stripe_sub.pause_collection.present?
-        begin
+      begin
+        if stripe_sub.pause_collection.present?
           self.pause_collection_at = Time.current
           self.pause_collection_behavior = stripe_sub.pause_collection.behavior
           self.pause_collection_resumes_at = stripe_sub.pause_collection.resumes_at
-        rescue StandardError
+        else
+          self.pause_collection_at = nil
+          self.pause_collection_behavior = nil
+          self.pause_collection_resumes_at = nil
         end
+      rescue StandardError
       end
 
       self.save!
