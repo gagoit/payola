@@ -119,7 +119,7 @@ module Payola
         if stripe_sub.pause_collection.present?
           self.pause_collection_at = Time.current
           self.pause_collection_behavior = stripe_sub.pause_collection.behavior
-          self.pause_collection_resumes_at = stripe_sub.pause_collection.resumes_at
+          self.pause_collection_resumes_at = stripe_sub.pause_collection.resumes_at.present? ? Time.zone.at(stripe_sub.pause_collection.resumes_at) : nil
         else
           self.pause_collection_at = nil
           self.pause_collection_behavior = nil
