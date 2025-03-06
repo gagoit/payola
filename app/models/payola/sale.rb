@@ -57,7 +57,7 @@ module Payola
     end
 
     def verify_charge!
-      if Payola.charge_verifier.arity > 1
+      if Payola.charge_verifier.parameters.length > 1
         Payola.charge_verifier.call(self, custom_fields)
       else
         Payola.charge_verifier.call(self)
